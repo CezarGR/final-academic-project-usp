@@ -1,0 +1,13 @@
+{
+  "scenario": "scenario-4",
+  "description": "API e MongoDB na nuvem; Prometheus também externo (ex.: mesma VPC). Nesta máquina: apenas k6 + Docker com Grafana local. O run-tests.py gera o datasource Prometheus apontando para prometheusUri. Ajuste applicationUri, healthCheckUri e prometheusUri.",
+  "testFile": "k6-load-test.js",
+  "databaseLocation": "external",
+  "externalApplication": true,
+  "applicationUri": "http://localhost:8080",
+  "healthCheckUri": "http://localhost:8080/actuator/health",
+  "prometheusUri": "http://localhost:9090",
+  "cpus": 100,
+  "memory": 100,
+  "runDockerCompose": true
+}

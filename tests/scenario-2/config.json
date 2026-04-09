@@ -1,0 +1,10 @@
+{
+  "scenario": "scenario-2",
+  "description": "Uso esperado pelo time de negócio: alta utilização da API com consumo constante e picos eventuais. Infra local: aplicação e MongoDB na mesma máquina do pesquisador. Provisionamento inicial 1,0 CPU e 512 MiB e com o banco de dados na mesma máquina com 4.0 CPU e 512 MiB.",
+  "testFile": "k6-load-test.js",
+  "databaseLocation": "internal",
+  "applicationUri": "http://transaction-api:8080",
+  "cpus": 1.0,
+  "memory": 512,
+  "runDockerCompose": true
+}

@@ -1,0 +1,402 @@
+[
+    {
+        "_id": {
+            "$oid": "698a8a229cc78c2b3222eb8f"
+        },
+        "name": "Gabriel Silva",
+        "document": "11111111111",
+        "birthDate": {
+            "$date": "1995-03-12T00:00:00.000Z"
+        },
+        "balance": 100000,
+        "specialLimit": 1000,
+        "usedSpecialLimit": 0,
+        "createdAt": {
+            "$date": "2026-02-10T01:30:10.611Z"
+        },
+        "updatedAt": {
+            "$date": "2026-02-10T01:30:10.611Z"
+        },
+        "_class": "com.tcc.transaction_api.domain.model.User"
+    },
+    {
+        "_id": {
+            "$oid": "698a8a229cc78c2b3222eb9f"
+        },
+        "name": "Ana Souza",
+        "document": "22222222222",
+        "birthDate": {
+            "$date": "1998-07-25T00:00:00.000Z"
+        },
+        "balance": 100000,
+        "specialLimit": 1000,
+        "usedSpecialLimit": 0,
+        "createdAt": {
+            "$date": "2026-02-10T01:30:10.611Z"
+        },
+        "updatedAt": {
+            "$date": "2026-02-10T01:30:10.611Z"
+        },
+        "_class": "com.tcc.transaction_api.domain.model.User"
+    },
+    {
+        "_id": {
+            "$oid": "698a8a229cc78c2b3222ebaf"
+        },
+        "name": "Lucas Pereira",
+        "document": "33333333333",
+        "birthDate": {
+            "$date": "1993-11-02T00:00:00.000Z"
+        },
+        "balance": 100000,
+        "specialLimit": 1000,
+        "usedSpecialLimit": 0,
+        "createdAt": {
+            "$date": "2026-02-10T01:30:10.611Z"
+        },
+        "updatedAt": {
+            "$date": "2026-02-10T01:30:10.611Z"
+        },
+        "_class": "com.tcc.transaction_api.domain.model.User"
+    },
+    {
+        "_id": {
+            "$oid": "698a8a229cc78c2b3222ebbf"
+        },
+        "name": "Mariana Costa",
+        "document": "44444444444",
+        "birthDate": {
+            "$date": "2001-01-19T00:00:00.000Z"
+        },
+        "balance": 100000,
+        "specialLimit": 1000,
+        "usedSpecialLimit": 0,
+        "createdAt": {
+            "$date": "2026-02-10T01:30:10.611Z"
+        },
+        "updatedAt": {
+            "$date": "2026-02-10T01:30:10.611Z"
+        },
+        "_class": "com.tcc.transaction_api.domain.model.User"
+    },
+    {
+        "_id": {
+            "$oid": "698a8a229cc78c2b3222ebcf"
+        },
+        "name": "Rafael Lima",
+        "document": "55555555555",
+        "birthDate": {
+            "$date": "1990-09-08T00:00:00.000Z"
+        },
+        "balance": 100000,
+        "specialLimit": 1000,
+        "usedSpecialLimit": 0,
+        "createdAt": {
+            "$date": "2026-02-10T01:30:10.611Z"
+        },
+        "updatedAt": {
+            "$date": "2026-02-10T01:30:10.611Z"
+        },
+        "_class": "com.tcc.transaction_api.domain.model.User"
+    },
+    {
+        "_id": {
+            "$oid": "698a8a229cc78c2b3222ebdf"
+        },
+        "name": "Beatriz Rocha",
+        "document": "66666666666",
+        "birthDate": {
+            "$date": "1997-05-14T00:00:00.000Z"
+        },
+        "balance": 100000,
+        "specialLimit": 1000,
+        "usedSpecialLimit": 0,
+        "createdAt": {
+            "$date": "2026-02-10T01:30:10.611Z"
+        },
+        "updatedAt": {
+            "$date": "2026-02-10T01:30:10.611Z"
+        },
+        "_class": "com.tcc.transaction_api.domain.model.User"
+    },
+    {
+        "_id": {
+            "$oid": "698a8a229cc78c2b3222ebef"
+        },
+        "name": "Pedro Martins",
+        "document": "77777777777",
+        "birthDate": {
+            "$date": "1994-12-30T00:00:00.000Z"
+        },
+        "balance": 100000,
+        "specialLimit": 1000,
+        "usedSpecialLimit": 0,
+        "createdAt": {
+            "$date": "2026-02-10T01:30:10.611Z"
+        },
+        "updatedAt": {
+            "$date": "2026-02-10T01:30:10.611Z"
+        },
+        "_class": "com.tcc.transaction_api.domain.model.User"
+    },
+    {
+        "_id": {
+            "$oid": "698a8a229cc78c2b3222ebff"
+        },
+        "name": "Juliana Alves",
+        "document": "88888888888",
+        "birthDate": {
+            "$date": "2000-06-18T00:00:00.000Z"
+        },
+        "balance": 100000,
+        "specialLimit": 1000,
+        "usedSpecialLimit": 0,
+        "createdAt": {
+            "$date": "2026-02-10T01:30:10.611Z"
+        },
+        "updatedAt": {
+            "$date": "2026-02-10T01:30:10.611Z"
+        },
+        "_class": "com.tcc.transaction_api.domain.model.User"
+    },
+    {
+        "_id": {
+            "$oid": "698a8a229cc78c2b3222ec0f"
+        },
+        "name": "Thiago Mendes",
+        "document": "99999999999",
+        "birthDate": {
+            "$date": "1992-04-10T00:00:00.000Z"
+        },
+        "balance": 100000,
+        "specialLimit": 1000,
+        "usedSpecialLimit": 0,
+        "createdAt": {
+            "$date": "2026-02-10T01:30:10.611Z"
+        },
+        "updatedAt": {
+            "$date": "2026-02-10T01:30:10.611Z"
+        },
+        "_class": "com.tcc.transaction_api.domain.model.User"
+    },
+    {
+        "_id": {
+            "$oid": "698a8a229cc78c2b3222ec1f"
+        },
+        "name": "Fernando Araujo",
+        "document": "10101010101",
+        "birthDate": {
+            "$date": "1991-02-15T00:00:00.000Z"
+        },
+        "balance": 100000,
+        "specialLimit": 1000,
+        "usedSpecialLimit": 0,
+        "createdAt": {
+            "$date": "2026-02-10T01:30:10.611Z"
+        },
+        "updatedAt": {
+            "$date": "2026-02-10T01:30:10.611Z"
+        },
+        "_class": "com.tcc.transaction_api.domain.model.User"
+    },
+    {
+        "_id": {
+            "$oid": "698a8a229cc78c2b3222ec2f"
+        },
+        "name": "Camila Torres",
+        "document": "20202020202",
+        "birthDate": {
+            "$date": "1996-08-21T00:00:00.000Z"
+        },
+        "balance": 100000,
+        "specialLimit": 1000,
+        "usedSpecialLimit": 0,
+        "createdAt": {
+            "$date": "2026-02-10T01:30:10.611Z"
+        },
+        "updatedAt": {
+            "$date": "2026-02-10T01:30:10.611Z"
+        },
+        "_class": "com.tcc.transaction_api.domain.model.User"
+    },
+    {
+        "_id": {
+            "$oid": "698a8a229cc78c2b3222ec3f"
+        },
+        "name": "Bruno Nogueira",
+        "document": "30303030303",
+        "birthDate": {
+            "$date": "1989-11-03T00:00:00.000Z"
+        },
+        "balance": 100000,
+        "specialLimit": 1000,
+        "usedSpecialLimit": 0,
+        "createdAt": {
+            "$date": "2026-02-10T01:30:10.611Z"
+        },
+        "updatedAt": {
+            "$date": "2026-02-10T01:30:10.611Z"
+        },
+        "_class": "com.tcc.transaction_api.domain.model.User"
+    },
+    {
+        "_id": {
+            "$oid": "698a8a229cc78c2b3222ec4f"
+        },
+        "name": "Patricia Ribeiro",
+        "document": "40404040404",
+        "birthDate": {
+            "$date": "1993-06-27T00:00:00.000Z"
+        },
+        "balance": 100000,
+        "specialLimit": 1000,
+        "usedSpecialLimit": 0,
+        "createdAt": {
+            "$date": "2026-02-10T01:30:10.611Z"
+        },
+        "updatedAt": {
+            "$date": "2026-02-10T01:30:10.611Z"
+        },
+        "_class": "com.tcc.transaction_api.domain.model.User"
+    },
+    {
+        "_id": {
+            "$oid": "698a8a229cc78c2b3222ec5f"
+        },
+        "name": "Diego Freitas",
+        "document": "50505050505",
+        "birthDate": {
+            "$date": "1990-04-09T00:00:00.000Z"
+        },
+        "balance": 100000,
+        "specialLimit": 1000,
+        "usedSpecialLimit": 0,
+        "createdAt": {
+            "$date": "2026-02-10T01:30:10.611Z"
+        },
+        "updatedAt": {
+            "$date": "2026-02-10T01:30:10.611Z"
+        },
+        "_class": "com.tcc.transaction_api.domain.model.User"
+    },
+    {
+        "_id": {
+            "$oid": "698a8a229cc78c2b3222ec6f"
+        },
+        "name": "Renata Pacheco",
+        "document": "60606060606",
+        "birthDate": {
+            "$date": "1998-10-14T00:00:00.000Z"
+        },
+        "balance": 100000,
+        "specialLimit": 1000,
+        "usedSpecialLimit": 0,
+        "createdAt": {
+            "$date": "2026-02-10T01:30:10.611Z"
+        },
+        "updatedAt": {
+            "$date": "2026-02-10T01:30:10.611Z"
+        },
+        "_class": "com.tcc.transaction_api.domain.model.User"
+    },
+    {
+        "_id": {
+            "$oid": "698a8a229cc78c2b3222ec7f"
+        },
+        "name": "Anderson Guedes",
+        "document": "70707070707",
+        "birthDate": {
+            "$date": "1987-12-01T00:00:00.000Z"
+        },
+        "balance": 100000,
+        "specialLimit": 1000,
+        "usedSpecialLimit": 0,
+        "createdAt": {
+            "$date": "2026-02-10T01:30:10.611Z"
+        },
+        "updatedAt": {
+            "$date": "2026-02-10T01:30:10.611Z"
+        },
+        "_class": "com.tcc.transaction_api.domain.model.User"
+    },
+    {
+        "_id": {
+            "$oid": "698a8a229cc78c2b3222ec8f"
+        },
+        "name": "Larissa Monteiro",
+        "document": "80808080808",
+        "birthDate": {
+            "$date": "2002-05-18T00:00:00.000Z"
+        },
+        "balance": 100000,
+        "specialLimit": 1000,
+        "usedSpecialLimit": 0,
+        "createdAt": {
+            "$date": "2026-02-10T01:30:10.611Z"
+        },
+        "updatedAt": {
+            "$date": "2026-02-10T01:30:10.611Z"
+        },
+        "_class": "com.tcc.transaction_api.domain.model.User"
+    },
+    {
+        "_id": {
+            "$oid": "698a8a229cc78c2b3222ec9f"
+        },
+        "name": "Rodrigo Batista",
+        "document": "90909090909",
+        "birthDate": {
+            "$date": "1995-09-07T00:00:00.000Z"
+        },
+        "balance": 100000,
+        "specialLimit": 1000,
+        "usedSpecialLimit": 0,
+        "createdAt": {
+            "$date": "2026-02-10T01:30:10.611Z"
+        },
+        "updatedAt": {
+            "$date": "2026-02-10T01:30:10.611Z"
+        },
+        "_class": "com.tcc.transaction_api.domain.model.User"
+    },
+    {
+        "_id": {
+            "$oid": "698a8a229cc78c2b3222ecaf"
+        },
+        "name": "Vanessa Lima",
+        "document": "12121212121",
+        "birthDate": {
+            "$date": "1999-01-30T00:00:00.000Z"
+        },
+        "balance": 100000,
+        "specialLimit": 1000,
+        "usedSpecialLimit": 0,
+        "createdAt": {
+            "$date": "2026-02-10T01:30:10.611Z"
+        },
+        "updatedAt": {
+            "$date": "2026-02-10T01:30:10.611Z"
+        },
+        "_class": "com.tcc.transaction_api.domain.model.User"
+    },
+    {
+        "_id": {
+            "$oid": "698a8a229cc78c2b3222ecbf"
+        },
+        "name": "Eduardo Macedo",
+        "document": "13131313131",
+        "birthDate": {
+            "$date": "1988-07-22T00:00:00.000Z"
+        },
+        "balance": 100000,
+        "specialLimit": 1000,
+        "usedSpecialLimit": 0,
+        "createdAt": {
+            "$date": "2026-02-10T01:30:10.611Z"
+        },
+        "updatedAt": {
+            "$date": "2026-02-10T01:30:10.611Z"
+        },
+        "_class": "com.tcc.transaction_api.domain.model.User"
+    }
+]

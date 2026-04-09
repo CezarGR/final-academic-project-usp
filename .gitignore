@@ -1,0 +1,8 @@
+/tests/result.xlsx
+/tests/scenario-*/.env
+/tests/scenario-*/k6-result.json
+/tests/scenario-*/k6-summary.json
+/tests/scenario-*/monitoring
+/tests/scenario-*/monitoring/grafana/provisioning/datasources/prometheus.generated.yml
+/tests/scenario-5/config.*
+/tests/scenario-*/ec2/.env

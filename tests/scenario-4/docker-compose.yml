@@ -1,0 +1,19 @@
+# Stack mínima: só Grafana (API, Mongo e Prometheus estão fora — ver config.json).
+# Bloco `grafana` alinhado aos demais cenários; sem `depends_on: prometheus` pois não há Prometheus neste compose.
+services:
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    environment:
+      GF_USERS_DEFAULT_THEME: light
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards
+    networks:
+      - monitoring
+
+networks:
+  monitoring:
+    driver: bridge
