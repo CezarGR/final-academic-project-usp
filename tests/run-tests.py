@@ -9,6 +9,11 @@ Script k6 único: ``tests/k6-load-test.js``.
 CLI: ``--scenario PASTA``; ``--skip-scenario PASTA`` (repetir para vários) exclui da fila;
 ``--repeat N`` repete o fluxo completo.
 
+Dados TSDB do Prometheus (cenários com serviço ``prometheus`` no compose) vão para um volume Docker
+externo nomeado ``scenario_<n>_<rodada>_execution`` (ex.: ``scenario_2_2_execution`` na 2ª rodada
+do ``scenario-2``). Para inspecionar depois: ``tests/docker-compose.metrics-view.yml`` com
+``PROMETHEUS_DATA_VOLUME_NAME`` apontando para esse volume.
+
 Dependências: pandas, openpyxl, requests, pymongo, playwright (+ ``playwright install chromium``);
 Docker (compose v2 ou docker-compose). Capturas Grafana usam o JSON do dashboard para listar painéis.
 """
@@ -109,6 +114,11 @@ def discover_scenarios(tests_root: Path) -> list[Path]:
             continue
         found.append(p)
     return found
+
+
+def format_datetime_local_from_epoch(epoch_s: int) -> str:
+    """Converte epoch Unix (segundos) para string local ``YYYY-MM-DD HH:MM:SS``."""
+    return datetime.fromtimestamp(int(epoch_s)).strftime("%Y-%m-%d %H:%M:%S")
 
 
 def format_duration_hms(seconds: float) -> str:
@@ -258,6 +268,47 @@ def mongo_prepare_db(scenario_dir: Path, cfg: ScenarioConfig) -> None:
         client.close()
 
 
+def prometheus_data_volume_name(scenario_folder_name: str, execution_index: int) -> str:
+    """
+    Nome estável do volume Docker para TSDB do Prometheus nesta pasta/rodada.
+
+    Ex.: pasta ``scenario-2``, rodada 1 → ``scenario_2_1_execution``; rodada 2 → ``scenario_2_2_execution``.
+    Pastas que não casam ``scenario-<número>`` usam o nome da pasta normalizado.
+    """
+    m = re.fullmatch(r"scenario-(\d+)", scenario_folder_name, flags=re.IGNORECASE)
+    if m:
+        key = m.group(1)
+    else:
+        key = re.sub(r"[^\w]+", "_", scenario_folder_name).strip("_").lower() or "unknown"
+    return f"scenario_{key}_{int(execution_index)}_execution"
+
+
+def scenario_compose_persists_prometheus_tsdb(scenario_dir: Path) -> bool:
+    """True se ``docker-compose.yml`` do cenário monta o volume TSDB externo do Prometheus."""
+    p = scenario_dir / "docker-compose.yml"
+    if not p.is_file():
+        return False
+    try:
+        return "prometheus_tsdb:/prometheus" in p.read_text(encoding="utf-8")
+    except OSError:
+        return False
+
+
+def ensure_docker_volume_exists(name: str) -> None:
+    """Garante volume nomeado (``docker volume create`` se ainda não existir)."""
+    r = subprocess.run(
+        ["docker", "volume", "inspect", name],
+        capture_output=True,
+        text=True,
+        timeout=30,
+    )
+    if r.returncode == 0:
+        print(f"Volume Prometheus (existente): {name}")
+        return
+    subprocess.run(["docker", "volume", "create", name], check=True, timeout=60)
+    print(f"Volume Prometheus criado: {name}")
+
+
 def compose_base_cmd() -> list[str]:
     if shutil.which("docker"):
         r = subprocess.run(
@@ -274,18 +325,28 @@ def compose_base_cmd() -> list[str]:
     raise RuntimeError("docker compose ou docker-compose não encontrado no PATH")
 
 
-def docker_compose_up(scenario_dir: Path) -> None:
+def _compose_subprocess_env(extra: dict[str, str] | None) -> dict[str, str]:
+    env = os.environ.copy()
+    if extra:
+        env.update(extra)
+    return env
+
+
+def docker_compose_up(scenario_dir: Path, *, compose_env: dict[str, str] | None = None) -> None:
     cmd = [*compose_base_cmd(), "up", "-d", "--build"]
     print(f"Subindo stack: {' '.join(cmd)} (cwd={scenario_dir})")
-    subprocess.run(cmd, cwd=scenario_dir, check=True)
+    subprocess.run(cmd, cwd=scenario_dir, check=True, env=_compose_subprocess_env(compose_env))
 
 
-def rm_containers(scenario_dir: Path) -> None:
-    """Para e remove containers, rede default do projeto e volumes declarados no compose."""
+def rm_containers(scenario_dir: Path, *, compose_env: dict[str, str] | None = None) -> None:
+    """Para e remove containers, rede default do projeto e volumes não externos do compose.
+
+    Volumes Prometheus marcados como ``external: true`` (TSDB por execução) permanecem no host.
+    """
     cmd = [*compose_base_cmd(), "down", "--remove-orphans", "-v"]
     print(f"Derrubando stack: {' '.join(cmd)} (cwd={scenario_dir})")
     try:
-        subprocess.run(cmd, cwd=scenario_dir, check=True)
+        subprocess.run(cmd, cwd=scenario_dir, check=True, env=_compose_subprocess_env(compose_env))
     except subprocess.CalledProcessError as e:
         print(f"Falha ao derrubar stack: {e}", file=sys.stderr)
 
@@ -695,6 +756,9 @@ def export_to_excel(
     scenario_folder_name: str,
     k6_exit_code: int = 0,
     sla_flags: dict[str, bool] | None = None,
+    *,
+    test_start_epoch: int | None = None,
+    test_end_epoch: int | None = None,
 ) -> None:
     db_label = "interno" if cfg.databaseLocation == "internal" else "externo (cloud)"
     sla_flags = sla_flags or {}
@@ -709,6 +773,16 @@ def export_to_excel(
         "CPU Alocada": cfg.cpus,
         "Memory Alocada": cfg.memory,
         "Banco de Dados": db_label,
+        "Data e hora de início": (
+            format_datetime_local_from_epoch(test_start_epoch)
+            if test_start_epoch is not None
+            else ""
+        ),
+        "Data e hora de fim": (
+            format_datetime_local_from_epoch(test_end_epoch)
+            if test_end_epoch is not None
+            else ""
+        ),
         "Timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         "Código saída k6": k6_exit_code,
         "RPS Médio": k6_data.get("rps_avg"),
@@ -800,13 +874,15 @@ def prompt_before_docker_teardown(scenario_name: str, *, pause: bool) -> None:
 def run_scenario(
     scenario_dir: Path,
     *,
+    execution_index: int = 1,
     skip_grafana_captures: bool = False,
     pause_before_docker_down: bool = False,
 ) -> None:
     name = scenario_dir.name
-    print(f"\n======== Cenário: {name} ========")
+    print(f"\n======== Cenário: {name} (rodada {execution_index}) ========")
     cfg: ScenarioConfig | None = None
     deadline = time.time() + COMPOSE_SERVICE_WAIT_S
+    compose_env: dict[str, str] | None = None
     try:
         cfg = load_scenario_config(scenario_dir)
         health_url = resolve_health_check_url(cfg)
@@ -821,7 +897,15 @@ def run_scenario(
                 else:
                     print('')
                     # write_grafana_prometheus_datasource(scenario_dir, cfg.prometheusUri)
-            docker_compose_up(scenario_dir)
+            if scenario_compose_persists_prometheus_tsdb(scenario_dir):
+                vol = prometheus_data_volume_name(name, execution_index)
+                ensure_docker_volume_exists(vol)
+                compose_env = {"PROMETHEUS_DATA_VOLUME_NAME": vol}
+                print(
+                    f"TSDB Prometheus será persistido no volume Docker «{vol}» "
+                    f"(ver tests/docker-compose.metrics-view.yml para reabrir com Grafana)."
+                )
+            docker_compose_up(scenario_dir, compose_env=compose_env)
             wait_for_ports(deadline, port_checks_for_config(cfg))
         else:
             print("runDockerCompose=false: pulando docker compose e verificação de portas locais.")
@@ -858,6 +942,8 @@ def run_scenario(
             name,
             k6_exit_code=k6_exit,
             sla_flags=sla_flags,
+            test_start_epoch=start,
+            test_end_epoch=end,
         )
         if k6_exit != 0:
             print(f"Cenário {name} concluído (k6 exit {k6_exit}; fluxo seguiu até o fim).")
@@ -866,7 +952,7 @@ def run_scenario(
     finally:
         if cfg is not None and cfg.runDockerCompose:
             prompt_before_docker_teardown(name, pause=pause_before_docker_down)
-            rm_containers(scenario_dir)
+            rm_containers(scenario_dir, compose_env=compose_env)
 
 
 def main() -> int:
@@ -974,9 +1060,17 @@ def main() -> int:
             print(f"\n{'='*60}\nRodada {run_idx} de {args.repeat}\n{'='*60}")
 
         for si, scenario_dir in enumerate(scenarios):
+            cleanup_env: dict[str, str] | None = None
+            if scenario_compose_persists_prometheus_tsdb(scenario_dir):
+                cleanup_env = {
+                    "PROMETHEUS_DATA_VOLUME_NAME": prometheus_data_volume_name(
+                        scenario_dir.name, run_idx
+                    )
+                }
             try:
                 run_scenario(
                     scenario_dir,
+                    execution_index=run_idx,
                     skip_grafana_captures=args.skip_grafana_captures,
                     pause_before_docker_down=args.pause_before_docker_down,
                 )
@@ -985,27 +1079,27 @@ def main() -> int:
                 try:
                     c = load_scenario_config(scenario_dir)
                     if c.runDockerCompose:
-                        rm_containers(scenario_dir)
+                        rm_containers(scenario_dir, compose_env=cleanup_env)
                 except Exception:
                     if (scenario_dir / "docker-compose.yml").is_file():
-                        rm_containers(scenario_dir)
+                        rm_containers(scenario_dir, compose_env=cleanup_env)
                 return 1
             except Exception as e:
                 print(f"Falha no cenário {scenario_dir.name}: {e}", file=sys.stderr)
                 try:
                     c = load_scenario_config(scenario_dir)
                     if c.runDockerCompose:
-                        rm_containers(scenario_dir)
+                        rm_containers(scenario_dir, compose_env=cleanup_env)
                 except Exception:
                     if (scenario_dir / "docker-compose.yml").is_file():
-                        rm_containers(scenario_dir)
+                        rm_containers(scenario_dir, compose_env=cleanup_env)
                 return 1
 
             last_scenario = si == len(scenarios) - 1
             last_round = run_idx == args.repeat
             if not (last_scenario and last_round):
                 print("\nAguardando para iniciar próximo cenário...\n")
-                time.sleep(60)
+                time.sleep(300)
 
     elapsed = time.perf_counter() - flow_start
     print(f"\nTempo total do fluxo (início → fim): {format_duration_hms(elapsed)}")
