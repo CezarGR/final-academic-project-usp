@@ -1099,7 +1099,7 @@ def main() -> int:
             last_round = run_idx == args.repeat
             if not (last_scenario and last_round):
                 print("\nAguardando para iniciar próximo cenário...\n")
-                time.sleep(300)
+                time.sleep(60)
 
     elapsed = time.perf_counter() - flow_start
     print(f"\nTempo total do fluxo (início → fim): {format_duration_hms(elapsed)}")

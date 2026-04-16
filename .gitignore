@@ -1,4 +1,3 @@
-/tests/result.xlsx
 /tests/scenario-*/.env
 /tests/scenario-*/k6-result.json
 /tests/scenario-*/k6-summary.json
